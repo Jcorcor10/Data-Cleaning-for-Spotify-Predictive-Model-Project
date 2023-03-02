@@ -1,0 +1,14 @@
+import pandas as pd
+#read the tracks metadata file 
+df = pd.read_csv('tracks.csv')
+
+#clean the artists' values and make the first artist the single artist for the song
+df['artists'] = df['artists'].str.replace("[", "").str.replace("]", "").str.replace("'","").str.replace('"',"")
+df['artists'] = df['artists'].str.split(",")
+new_column_name = "single_artist"
+for index, row in df.iterrows():
+    df.at[index, new_column_name] = row['artists'][0]
+
+
+#specify the path for the new dataframe
+df.to_csv()
