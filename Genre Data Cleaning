@@ -5,7 +5,8 @@ df = pd.read_csv('artists.csv')
 
 new_column_name = "single_genre"
 
-#take out the brackets and split at space to separate each word that describes a genre 
+#take out the brackets and split at space to separate each word that describes a genre. Clean genre values by taking out 
+#brackets and single quotations
 df['genres'] = df['genres'].str.replace("[", "").str.replace("]", "").str.replace(",", "").str.replace("'", "")
 df['genres'] = df['genres'].str.split(" ")
 
