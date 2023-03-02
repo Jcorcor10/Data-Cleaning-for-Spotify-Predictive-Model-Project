@@ -1,0 +1,37 @@
+import pandas as pd
+#Read the artists csv file
+df = pd.read_csv('artists.csv')
+#def process_list_column(df, column_name):
+
+new_column_name = "single_genre"
+
+#take out the brackets and split at space to separate each word that describes a genre 
+df['genres'] = df['genres'].str.replace("[", "").str.replace("]", "").str.replace(",", "").str.replace("'", "")
+df['genres'] = df['genres'].str.split(" ")
+
+#for every row: if there are no genre-describing words, drop the row; if there is only one genre-describing word
+#keep it; if there is more than one genre-describing word, make the most frequent one the genre
+for index, row in df.iterrows():
+    if len(row['genres']) == 0:
+        df.drop(index, inplace=True)
+    elif len(row['genres']) == 1:
+        df.at[index, new_column_name] = row['genres'][0]
+    else:
+        x = len(row['genres'])
+        word_counts = {}
+        word_list = row['genres']
+        for word in word_list:
+            if word in word_counts:
+                word_counts[word] += 1
+            else:
+                word_counts[word] = 1
+        most_common_word = max(word_counts, key=word_counts.get)
+        if word_counts[most_common_word] > 1:
+            df.at[index, new_column_name] = most_common_word
+        else:
+            df.at[index, new_column_name] = row['genres'][0]
+
+#send the new dataframe to a new file. Inside the parentehsis of the to_csv method, put the path of where to save the new
+#dataframe as a CSV
+df.to_csv()
+
